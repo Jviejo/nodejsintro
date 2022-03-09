@@ -9,7 +9,7 @@ const client = new Client({
 })
 
 const query = {
-    // give the query a unique name
+    // este nombre sirve para identificar el cache
     name: 'fetch-customer',
     text: 'SELECT * FROM CUSTOMERS WHERE customer_id = $1',
 
