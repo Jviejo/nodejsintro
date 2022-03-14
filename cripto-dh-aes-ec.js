@@ -9,75 +9,75 @@ var CURVE_ALGORTHM = 'wap-wsg-idm-ecid-wtls11';
 console.log("Elliptic Curve Algorithm: " + CURVE_ALGORTHM);
 console.log("\n");
 
-// Generate Zoe's keys...
-var zoe = crypto.createECDH(CURVE_ALGORTHM);
-var zoeKey = zoe.generateKeys();
+// Generate alice's keys...
+var alice = crypto.createECDH(CURVE_ALGORTHM);
+var aliceKey = alice.generateKeys();
 
-// Generating Joe's keys...
-var joe = crypto.createECDH(CURVE_ALGORTHM);
-var joeKey = joe.generateKeys();
+// Generating bob's keys...
+var bob = crypto.createECDH(CURVE_ALGORTHM);
+var bobKey = bob.generateKeys();
 
 // Exchange and generate secret...
-var zoeSecret = zoe.computeSecret(joeKey);
-var joeSecret = joe.computeSecret(zoeKey);
+var aliceSecret = alice.computeSecret(bobKey);
+var bobSecret = bob.computeSecret(aliceKey);
 
-assert.strictEqual(zoeSecret.toString('hex'), joeSecret.toString('hex'));
+assert.strictEqual(aliceSecret.toString('hex'), bobSecret.toString('hex'));
 
-console.log("Zoe's Public Key: " + zoe.getPublicKey('hex'));
-console.log("Zoe's Private Key: " + zoe.getPrivateKey('hex'));
-
-console.log("\n");
-
-console.log("Joe's Public Key: " + joe.getPublicKey('hex'));
-console.log("Joe's Private Key: " + joe.getPrivateKey('hex'));
+console.log("alice's Public Key: " + alice.getPublicKey('hex'));
+console.log("alice's Private Key: " + alice.getPrivateKey('hex'));
 
 console.log("\n");
 
-zoeSecret = zoeSecret.toString('hex');
-joeSecret = joeSecret.toString('hex');
-
-console.log('Zoe secret: ' + zoeSecret);
-console.log('Joe secret: ' + joeSecret);
+console.log("bob's Public Key: " + bob.getPublicKey('hex'));
+console.log("bob's Private Key: " + bob.getPrivateKey('hex'));
 
 console.log("\n");
 
-// Using the generated shared Secrets to cipher/decipher messages between Zoe and Joe
+aliceSecret = aliceSecret.toString('hex');
+bobSecret = bobSecret.toString('hex');
+
+console.log('alice secret: ' + aliceSecret);
+console.log('bob secret: ' + bobSecret);
+
+console.log("\n");
+
+// Using the generated shared Secrets to cipher/decipher messages between alice and bob
 var AES256 = "aes256";
 
-var zoeCipher = crypto.createCipher(AES256, zoeSecret);
-var zoeDecipher = crypto.createDecipher(AES256, zoeSecret);
+var aliceCipher = crypto.createCipher(AES256, aliceSecret);
+var aliceDecipher = crypto.createDecipher(AES256, aliceSecret);
 
-var joeCipher = crypto.createCipher(AES256, joeSecret);
-var joeDecipher = crypto.createDecipher(AES256, joeSecret);
+var bobCipher = crypto.createCipher(AES256, bobSecret);
+var bobDecipher = crypto.createDecipher(AES256, bobSecret);
 
-// Zoe ciphers a message for Joe
-var msg1 = "Hey Joe, I'm Zoe";
-var eMsg1 = zoeCipher.update(msg1, 'utf8', 'hex');
-eMsg1 += zoeCipher.final('hex');
-console.log("Zoe says (clear): " + msg1);
-console.log("Zoe says (ciphered): " + eMsg1);
-
-console.log('\n');
-
-// Joe deciphers Zoe's message
-var dMsg1 = joeDecipher.update(eMsg1, 'hex', 'utf8');
-dMsg1 += joeDecipher.final('utf8');
-console.log("Joe receives (ciphered): " + eMsg1);
-console.log("Joe receives (deciphered): " + dMsg1);
+// alice ciphers a message for bob
+var msg1 = "Hey bob, I'm alice";
+var eMsg1 = aliceCipher.update(msg1, 'utf8', 'hex');
+eMsg1 += aliceCipher.final('hex');
+console.log("alice says (clear): " + msg1);
+console.log("alice says (ciphered): " + eMsg1);
 
 console.log('\n');
 
-// Joe ciphers a message for Zoe
-var msg2 = "Hey Zoe, how are you doing?";
-var eMsg2 = joeCipher.update(msg2, 'utf8', 'hex');
-eMsg2 += joeCipher.final('hex');
-console.log("Joe says (clear): " + msg2);
-console.log("Joe says (ciphered): " + eMsg2);
+// bob deciphers alice's message
+var dMsg1 = bobDecipher.update(eMsg1, 'hex', 'utf8');
+dMsg1 += bobDecipher.final('utf8');
+console.log("bob receives (ciphered): " + eMsg1);
+console.log("bob receives (deciphered): " + dMsg1);
 
 console.log('\n');
 
-// Zoe deciphers Joe's message
-var dMsg2 = zoeDecipher.update(eMsg2, 'hex', 'utf8');
-dMsg2 += zoeDecipher.final('utf8');
-console.log("Zoe receives (ciphered): " + eMsg2);
-console.log("Zoe receives (deciphered): " + dMsg2);
+// bob ciphers a message for alice
+var msg2 = "Hey alice, how are you doing?";
+var eMsg2 = bobCipher.update(msg2, 'utf8', 'hex');
+eMsg2 += bobCipher.final('hex');
+console.log("bob says (clear): " + msg2);
+console.log("bob says (ciphered): " + eMsg2);
+
+console.log('\n');
+
+// alice deciphers bob's message
+var dMsg2 = aliceDecipher.update(eMsg2, 'hex', 'utf8');
+dMsg2 += aliceDecipher.final('utf8');
+console.log("alice receives (ciphered): " + eMsg2);
+console.log("alice receives (deciphered): " + dMsg2);
