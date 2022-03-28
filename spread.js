@@ -6,6 +6,11 @@ var suma3 = function (a, b, c) {
 
 console.log(suma3(...array)); // 6
 
+const [a,b,c] = [1,2,3];
+console.log(suma3(a, b, c)); // 6
+
+console.log(suma3(array[0], array[1], array[2]));
+
 
 
 var array2 = [4, 5, 6, 7];
